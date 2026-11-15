@@ -274,7 +274,7 @@ if(typeof data.accounts.gsb!=='number')data.accounts.gsb=27952;
 
 if(typeof data.accounts.ktb!=='number')data.accounts.ktb=2596;
 
-if(!data.billStatus)data.billStatus={};
+if(!data.billStatus)data.billStatus={};if(!data.billAmounts)data.billAmounts={};
 
 const bills=[['ค่าไฟและอินเทอร์เน็ต',3000],['ค่าประกัน',1500],['ให้ครอบครัว',7000]];
 
@@ -306,23 +306,30 @@ function changeAccount(){
 
 function billKey(i){return month()+'-'+i}
 
+
 function payBill(i){
-
+ let amount=bills[i][1];
+ if(i===2){
+  const answer=prompt('เดือนนี้ให้เงินครอบครัวกี่บาท? (ใส่ 0 หากไม่ได้ให้)','7000');
+  if(answer===null)return;
+  amount=Number(answer);
+  if(!Number.isFinite(amount)||amount<0){alert('กรุณากรอกจำนวนเงินให้ถูกต้อง');return}
+ }
  const k=billKey(i);
-
- if(data.billStatus[k]){alert('บิลนี้จ่ายแล้ว');return}
-
- if(data.accounts.gsb<bills[i][1]){alert('ยอดเงินออมสินไม่เพียงพอ');return}
-
- if(!confirm('ยืนยันจ่าย'+bills[i][0]+' '+money(bills[i][1])+' จากออมสิน?'))return;
-
- data.accounts.gsb-=bills[i][1];
-
+ if(data.billStatus[k]){alert('บันทึกรายการนี้แล้ว');return}
+ if(amount===0){
+  data.billStatus[k]='skipped';
+  data.billAmounts[k]=0;
+  save();render();return;
+ }
+ if(data.accounts.gsb<amount){alert('ยอดเงินออมสินไม่เพียงพอ');return}
+ if(!confirm('ยืนยันจ่าย'+bills[i][0]+' '+money(amount)+' จากออมสิน?'))return;
+ data.accounts.gsb-=amount;
  data.billStatus[k]=true;
-
+ data.billAmounts[k]=amount;
  save();render();
-
 }
+
 
 function add(){
 
@@ -469,9 +476,9 @@ renderJars();
 
   const paid=!!data.billStatus[billKey(i)];
 
-  if(!paid)unpaid+=b[1];
+  if(!paid)unpaid+=(i===2?(data.billAmounts[billKey(i)]??b[1]):b[1]);
 
-  return `<div class="item"><div class="row"><div>${b[0]}<br><b>${money(b[1])}</b><div class="muted">${paid?'จ่ายแล้ว':'ยังไม่จ่าย'}</div></div><div><button class="${paid?'secondary':''}" onclick="payBill(${i})" ${paid?'disabled':''}>${paid?'เรียบร้อย':'จ่ายบิล'}</button></div></div></div>`;
+  return `<div class="item"><div class="row"><div>${b[0]}<br><b>${money(b[1])}</b><div class="muted"><${paid==='skipped'?'เดือนนี้ไม่ได้ให้':paid?'จ่ายแล้ว':'ยังไม่จ่าย'}/div></div><div><button class="${paid?'secondary':''}" onclick="payBill(${i})" ${paid?'disabled':''}>${paid?'เรียบร้อย':'จ่ายบิล'}</button></div></div></div>`;
 
  }).join('');
 
