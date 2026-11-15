@@ -199,7 +199,15 @@ canvas{width:100%;max-height:220px}
 <div class="card">
 
 <h2>🌱 เงินออมและเงินลงทุน</h2>
+<div class="card">
 
+<h2>🐷 กระปุกเงินออมของฉัน</h2>
+
+<div class="muted">เติมและถอนเงินผ่านบัญชีออมสิน</div>
+
+<div id="jarList"></div>
+
+</div>
 <input id="fundName" placeholder="ชื่อเงินออม / การลงทุน">
 
 <input id="fundAmount" type="number" placeholder="จำนวนเงิน">
@@ -251,6 +259,14 @@ let data=JSON.parse(localStorage.getItem(key)||'{"items":[],"budget":0}');
 if(!Array.isArray(data.items))data.items=[];
 
 if(!Array.isArray(data.funds))data.funds=[];
+if(!Array.isArray(data.jars)){
+ data.jars=[
+  {name:'✈️ เก็บเที่ยว',balance:0,goal:0},
+  {name:'🛍️ เก็บซื้อของที่อยากได้',balance:0,goal:0},
+  {name:'🩷 เก็บเงินฉุกเฉิน',balance:0,goal:0}
+ ];
+}
+
 
 if(!data.accounts)data.accounts={};
 
@@ -394,7 +410,52 @@ function saveBudget(){
 
 }
 
+function setJarGoal(i){
+ const v=Number(prompt('กำหนดเป้าหมายเงินเก็บ (บาท)'));
+ if(!Number.isFinite(v)||v<0){alert('จำนวนเงินไม่ถูกต้อง');return}
+ data.jars[i].goal=v;
+ save();render();
+}
+
+function depositJar(i){
+ const v=Number(prompt('ต้องการเติมเงินเข้ากระปุกกี่บาท?'));
+ if(!Number.isFinite(v)||v<=0){alert('จำนวนเงินไม่ถูกต้อง');return}
+ if(data.accounts.gsb<v){alert('เงินในออมสินไม่เพียงพอ');return}
+ data.accounts.gsb-=v;
+ data.jars[i].balance+=v;
+ save();render();
+}
+
+function withdrawJar(i){
+ const v=Number(prompt('ต้องการถอนเงินจากกระปุกกี่บาท?'));
+ if(!Number.isFinite(v)||v<=0){alert('จำนวนเงินไม่ถูกต้อง');return}
+ if(data.jars[i].balance<v){alert('เงินในกระปุกไม่เพียงพอ');return}
+ data.jars[i].balance-=v;
+ data.accounts.gsb+=v;
+ save();render();
+}
+
+function renderJars(){
+ document.getElementById('jarList').innerHTML=data.jars.map((j,i)=>{
+  const pct=j.goal>0?Math.min(j.balance/j.goal*100,100):0;
+  return `<div class="stat" style="margin-top:12px">
+   <h3>${j.name}</h3>
+   <strong>${money(j.balance)}</strong>
+   <div class="muted">เป้าหมาย ${money(j.goal)}</div>
+   <div class="bar"><span style="width:${pct}%"></span></div>
+   <div class="muted">สำเร็จ ${pct.toFixed(0)}%</div>
+   <button onclick="setJarGoal(${i})" class="secondary">ตั้งเป้าหมาย</button>
+   <div class="row">
+    <button onclick="depositJar(${i})">เติมเงิน</button>
+    <button onclick="withdrawJar(${i})" class="secondary">ถอนเงิน</button>
+   </div>
+  </div>`;
+ }).join('');
+}
+
 function render(){
+
+renderJars();
 
  document.getElementById('gsb').textContent=money(data.accounts.gsb);
 
