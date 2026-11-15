@@ -1,0 +1,243 @@
+
+
+<!DOCTYPE html>
+
+<html lang="th">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="theme-color" content="#fff0f5">
+
+<title>Mimi Money ♡</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{margin:0;background:#fff7fa;color:#51434b;font-family:system-ui,sans-serif;padding:20px}
+
+header{text-align:center;padding:18px}
+
+h1{color:#d66b91;margin:5px}
+
+.card{background:white;border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 3px 15px #e9cbd633}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.stat{background:#fff0f5;border-radius:15px;padding:14px}
+
+.stat small{color:#987b89}
+
+.stat strong{display:block;font-size:21px;margin-top:6px}
+
+input,select,button{width:100%;padding:13px;border-radius:12px;border:1px solid #ead6df;font:inherit;margin:6px 0;background:white;color:#51434b}
+
+button{background:#d9789b;color:white;border:0;font-weight:700}
+
+button.secondary{background:#fbe5ed;color:#99516e}
+
+h2{font-size:18px;margin-top:0}
+
+.notice{padding:12px;border-radius:12px;background:#fff0c9;color:#805c20;margin:10px 0}
+
+.item{padding:12px 0;border-bottom:1px solid #f2e5eb;display:flex;justify-content:space-between;gap:8px}
+
+.income{color:#29966a}.expense{color:#d65e78}
+
+small{color:#987b89}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div style="font-size:35px">🌷</div>
+
+<h1>Mimi Money ♡</h1>
+
+<small>บันทึกเงินของฉันอย่างมีความสุข</small>
+
+</header>
+
+<div class="card">
+
+<h2>💗 ภาพรวมเดือนนี้</h2>
+
+<div class="grid">
+
+<div class="stat"><small>รายรับ</small><strong id="income">฿0</strong></div>
+
+<div class="stat"><small>รายจ่าย</small><strong id="expense">฿0</strong></div>
+
+<div class="stat"><small>คงเหลือ</small><strong id="balance">฿0</strong></div>
+
+<div class="stat"><small>เงินเก็บตั้งต้น</small><strong>฿27,000</strong></div>
+
+</div>
+
+<div id="alert"></div>
+
+</div>
+
+<div class="card">
+
+<h2>➕ บันทึกรายการ</h2>
+
+<select id="type">
+
+<option value="expense">รายจ่าย</option>
+
+<option value="income">รายรับ</option>
+
+</select>
+
+<input id="name" placeholder="ชื่อรายการ เช่น เงินเดือน / ค่าอาหาร">
+
+<input id="amount" type="number" min="0" placeholder="จำนวนเงิน (บาท)">
+
+<select id="category">
+
+<option>เงินเดือน</option><option>OT</option><option>อาหาร</option>
+
+<option>เดินทาง</option><option>ครอบครัว</option><option>ประกัน</option>
+
+<option>ลงทุน</option><option>ค่าน้ำค่าไฟ/อินเทอร์เน็ต</option><option>อื่น ๆ</option>
+
+</select>
+
+<input id="date" type="date">
+
+<button onclick="add()">บันทึกรายการ</button>
+
+</div>
+
+<div class="card">
+
+<h2>🎯 งบประมาณรายจ่าย</h2>
+
+<p><small>ตั้งงบรายเดือนที่ต้องการใช้</small></p>
+
+<input id="budget" type="number" placeholder="งบรายเดือน (บาท)">
+
+<button class="secondary" onclick="saveBudget()">บันทึกงบประมาณ</button>
+
+<p id="budgetStatus"></p>
+
+</div>
+
+<div class="card">
+
+<h2>🏡 ค่าใช้จ่ายประจำ</h2>
+
+<div id="fixed"></div>
+
+</div>
+
+<div class="card">
+
+<h2>📒 รายการย้อนหลัง</h2>
+
+<div id="history"></div>
+
+<button class="secondary" onclick="exportData()">ส่งออกข้อมูลสำรอง</button>
+
+</div>
+
+<script>
+
+const key='mimi-money-data';
+
+let data=JSON.parse(localStorage.getItem(key)||'{"items":[],"budget":0}');
+
+const fixed=[['ค่าประกัน',1500],['ให้ครอบครัว',7000],['ค่าไฟและอินเทอร์เน็ต',3000],['เงินลงทุน',0]];
+
+document.getElementById('date').value=new Date().toISOString().slice(0,10);
+
+document.getElementById('budget').value=data.budget||'';
+
+function save(){localStorage.setItem(key,JSON.stringify(data));render()}
+
+function money(n){return '฿'+Number(n).toLocaleString('th-TH')}
+
+function add(){
+
+let name=document.getElementById('name').value.trim();
+
+let amount=Number(document.getElementById('amount').value);
+
+if(!name||amount<=0){alert('กรอกชื่อรายการและจำนวนเงินก่อนนะคะ');return}
+
+data.items.unshift({name,amount,type:document.getElementById('type').value,category:document.getElementById('category').value,date:document.getElementById('date').value});
+
+document.getElementById('name').value='';
+
+document.getElementById('amount').value='';
+
+save();
+
+}
+
+function saveBudget(){data.budget=Number(document.getElementById('budget').value)||0;save()}
+
+function render(){
+
+let month=new Date().toISOString().slice(0,7);
+
+let items=data.items.filter(x=>(x.date||'').startsWith(month));
+
+let inc=items.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+
+let exp=items.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
+
+document.getElementById('income').textContent=money(inc);
+
+document.getElementById('expense').textContent=money(exp);
+
+document.getElementById('balance').textContent=money(inc-exp);
+
+let alertBox='';
+
+if(data.budget>0){
+
+let pct=exp/data.budget*100;
+
+let level=pct>=100?'เกินงบแล้วค่ะ!':pct>=90?'ระวัง! ใช้งบเกิน 90% แล้ว':pct>=70?'แจ้งเตือน: ใช้งบถึง 70% แล้ว':'ยังอยู่ในงบค่ะ 💗';
+
+alertBox='<div class="notice">'+level+' ('+pct.toFixed(0)+'%)</div>';
+
+document.getElementById('budgetStatus').textContent='ใช้ไป '+money(exp)+' จาก '+money(data.budget)+' · เหลือ '+money(data.budget-exp);
+
+}
+
+document.getElementById('alert').innerHTML=alertBox;
+
+document.getElementById('history').innerHTML=data.items.length?data.items.map((x,i)=>'<div class="item"><div>'+x.name+'<br><small>'+x.date+' · '+x.category+'</small></div><div class="'+x.type+'">'+(x.type==='income'?'+':'−')+money(x.amount)+'<br><button class="secondary" onclick="removeItem('+i+')">ลบ</button></div></div>').join(''):'ยังไม่มีรายการค่ะ';
+
+document.getElementById('fixed').innerHTML=fixed.map(x=>'<div class="item"><span>'+x[0]+'</span><strong>'+money(x[1])+'</strong></div>').join('');
+
+}
+
+function removeItem(i){if(confirm('ต้องการลบรายการนี้ไหม?')){data.items.splice(i,1);save()}}
+
+function exportData(){
+
+let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+
+let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mimi-money-backup.json';a.click();
+
+}
+
+render();
+
+</script>
+
+</body>
+
+</html>
