@@ -8,9 +8,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<meta name="theme-color" content="#fff0f5">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Mimi Money ♡</title>
 
@@ -18,41 +16,53 @@
 
 *{box-sizing:border-box}
 
-body{margin:0;padding:15px;background:#fff7fa;color:#51434b;font-family:system-ui,sans-serif;max-width:700px;margin:auto}
+body{margin:0;background:#fff8fb;color:#493b46;font-family:Arial,sans-serif;padding:16px}
 
 header{text-align:center;padding:18px}
 
-h1{color:#d66b91}
+h1{color:#d66b9b;margin:0}
 
-h2{font-size:18px}
+.sub{color:#9b8291;font-size:13px}
 
-.card{background:white;border-radius:18px;padding:16px;margin:13px 0;box-shadow:0 3px 15px #e9cbd633}
+.card{background:white;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 3px 14px #e9cbd833}
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+h2{font-size:17px;margin:0 0 12px;color:#bd5e8b}
 
-.stat{background:#fff0f5;padding:12px;border-radius:13px}
+h3{font-size:14px;margin:10px 0}
 
-.stat small{color:#987b89}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-.stat strong{display:block;font-size:19px;margin-top:5px}
+.stat{background:#fff1f7;padding:13px;border-radius:13px}
 
-input,select,button{width:100%;padding:12px;border-radius:11px;border:1px solid #ead6df;font:inherit;margin:5px 0;background:white;color:#51434b}
+.stat small{color:#977e8d}
 
-button{background:#d9789b;color:white;border:0;font-weight:bold}
+.stat strong{display:block;font-size:19px;margin-top:6px}
 
-button.secondary{background:#fbe5ed;color:#99516e}
+input,select,button{width:100%;padding:12px;border-radius:11px;border:1px solid #ead8e2;background:white;font-size:15px;margin:5px 0;color:#493b46}
 
-.item{padding:11px 0;border-bottom:1px solid #f2e5eb;display:flex;justify-content:space-between;align-items:center;gap:8px}
+button{background:#d66b9b;color:white;border:0;font-weight:bold}
 
-small,.muted{color:#987b89}
+button.secondary{background:#f8e6ef;color:#a94e79}
 
-.notice{padding:11px;border-radius:12px;background:#fff0c9;color:#805c20;margin:9px 0}
+button.danger{background:#bd6570}
 
-.bar{height:12px;background:#f8e8ee;border-radius:20px;overflow:hidden;margin:5px 0}
+label{font-size:13px;color:#806b78}
 
-.fill{height:100%;background:#df8eac}
+.row{display:flex;gap:8px;align-items:center}
 
-.tiny{width:auto;padding:7px 10px;font-size:12px}
+.row>*{flex:1;min-width:0}
+
+.item{border-bottom:1px solid #f1e5eb;padding:10px 0;font-size:14px}
+
+.muted{font-size:12px;color:#9b8793}
+
+.good{color:#29966a}.bad{color:#c65c69}
+
+.bar{height:10px;background:#f4e5ed;border-radius:10px;overflow:hidden}
+
+.bar span{display:block;height:100%;background:#dc83aa}
+
+canvas{width:100%;max-height:220px}
 
 </style>
 
@@ -62,31 +72,77 @@ small,.muted{color:#987b89}
 
 <header>
 
-<div style="font-size:35px">🌷</div>
+<h1>♡ Mimi Money ♡</h1>
 
-<h1>Mimi Money ♡</h1>
-
-<small>บันทึกเงินของฉันอย่างมีความสุข</small>
+<div class="sub">จัดการเงินของฉันอย่างสบายใจ</div>
 
 </header>
 
 <div class="card">
 
-<h2>💗 ภาพรวมเดือนนี้</h2>
+<h2>💰 บัญชีของฉัน</h2>
 
 <div class="grid">
 
-<div class="stat"><small>รายรับ</small><strong id="income">฿0</strong></div>
+<div class="stat"><small>ออมสิน</small><strong id="gsb">฿0</strong></div>
 
-<div class="stat"><small>รายจ่ายจริง</small><strong id="expense">฿0</strong></div>
-
-<div class="stat"><small>กันเงินประจำ</small><strong id="reserved">฿0</strong></div>
-
-<div class="stat"><small>เงินเหลือใช้โดยประมาณ</small><strong id="available">฿0</strong></div>
+<div class="stat"><small>กรุงไทย</small><strong id="ktb">฿0</strong></div>
 
 </div>
 
-<div id="alert"></div>
+<div class="stat" style="margin-top:10px">
+
+<small>ยอดเงินรวม</small><strong id="total">฿0</strong>
+
+</div>
+
+<h3>ปรับยอดบัญชี</h3>
+
+<div class="row">
+
+<select id="account"><option value="gsb">ออมสิน</option><option value="ktb">กรุงไทย</option></select>
+
+<input id="newBalance" type="number" placeholder="ยอดเงินปัจจุบัน">
+
+</div>
+
+<input id="accountNote" placeholder="หมายเหตุ (ถ้ามี)">
+
+<button onclick="changeAccount()">บันทึกยอดบัญชี</button>
+
+</div>
+
+<div class="card">
+
+<h2>🧾 บิลประจำเดือน</h2>
+
+<div id="billList"></div>
+
+<div class="stat"><small>ยอดบิลที่ยังไม่จ่าย</small><strong id="billSummary">฿0</strong></div>
+
+<div class="muted">ชำระบิลจากบัญชีออมสิน</div>
+
+</div>
+
+<div class="card">
+
+<h2>📊 ภาพรวมเดือนนี้</h2>
+
+<div class="grid">
+
+<div class="stat"><small>รายรับ</small><strong class="good" id="income">฿0</strong></div>
+
+<div class="stat"><small>รายจ่าย</small><strong class="bad" id="expense">฿0</strong></div>
+
+<div class="stat"><small>คงเหลือ</small><strong id="balance">฿0</strong></div>
+
+<div class="stat"><small>งบที่ใช้ไป</small><strong id="budgetPercent">0%</strong></div>
+
+</div>
+
+<div class="bar"><span id="budgetBar" style="width:0%"></span></div>
+
+<div id="budgetAlert" class="muted"></div>
 
 </div>
 
@@ -94,47 +150,31 @@ small,.muted{color:#987b89}
 
 <h2>➕ บันทึกรายการ</h2>
 
-<select id="type">
+<label>ประเภทรายการ</label>
 
-<option value="expense">รายจ่าย</option>
+<select id="type"><option value="expense">รายจ่าย</option><option value="income">รายรับ</option></select>
 
-<option value="income">รายรับ</option>
+<label>จำนวนเงิน</label>
 
-</select>
+<input id="amount" type="number" placeholder="จำนวนเงิน">
 
-<input id="name" placeholder="ชื่อรายการ">
-
-<input id="amount" type="number" min="0" placeholder="จำนวนเงิน (บาท)">
+<label>หมวดหมู่</label>
 
 <select id="category">
 
-<option>เงินเดือน</option>
-
-<option>OT</option>
-
-<option>อาหาร</option>
-
-<option>เดินทาง</option>
-
-<option>ครอบครัว</option>
-
-<option>ประกัน</option>
-
-<option>ลงทุน</option>
-
-<option>ค่าน้ำค่าไฟ/อินเทอร์เน็ต</option>
-
-<option>ของใช้ส่วนตัว</option>
-
-<option>สุขภาพ</option>
-
-<option>อื่น ๆ</option>
+<option>อาหาร</option><option>เดินทาง</option><option>ของใช้</option><option>ครอบครัว</option><option>สุขภาพ</option><option>บันเทิง</option><option>เงินเดือน</option><option>OT</option><option>อื่น ๆ</option>
 
 </select>
 
-<label class="muted">วันที่เกิดรายการจริง</label>
+<label>บัญชี</label>
+
+<select id="entryAccount"><option value="ktb">กรุงไทย</option><option value="gsb">ออมสิน</option></select>
+
+<label>วันที่รายการ</label>
 
 <input id="date" type="date">
+
+<input id="note" placeholder="รายละเอียดเพิ่มเติม">
 
 <button onclick="add()">บันทึกรายการ</button>
 
@@ -142,17 +182,15 @@ small,.muted{color:#987b89}
 
 <div class="card">
 
-<h2>📊 กราฟรายรับ–รายจ่าย 6 เดือน</h2>
+<h2>📈 กราฟรายรับ–รายจ่าย</h2>
 
-<div class="muted">สีเขียว = รายรับ · สีชมพู = รายจ่าย</div>
-
-<div id="chart"></div>
+<canvas id="chart" width="600" height="240"></canvas>
 
 </div>
 
 <div class="card">
 
-<h2>🧾 รายจ่ายแยกหมวดหมู่</h2>
+<h2>🧁 สรุปค่าใช้จ่ายตามหมวด</h2>
 
 <div id="categories"></div>
 
@@ -160,51 +198,15 @@ small,.muted{color:#987b89}
 
 <div class="card">
 
-<h2>🏡 ค่าใช้จ่ายประจำ</h2>
-
-<p class="muted">กันเงินไว้ตั้งแต่ต้นเดือน แม้ยังไม่ได้จ่ายจริง การกดว่าจ่ายแล้วจะไม่หักเงินซ้ำ</p>
-
-<div id="fixed"></div>
-
-</div>
-
-<div class="card">
-
 <h2>🌱 เงินออมและเงินลงทุน</h2>
 
-<div class="grid">
+<input id="fundName" placeholder="ชื่อเงินออม / การลงทุน">
 
-<div class="stat"><small>เงินออมตั้งต้น</small><strong>฿27,000</strong></div>
+<input id="fundAmount" type="number" placeholder="จำนวนเงิน">
 
-<div class="stat"><small>เงินออมสุทธิ</small><strong id="savingTotal">฿0</strong></div>
+<button onclick="addFund()">เพิ่มรายการ</button>
 
-<div class="stat"><small>เงินลงทุนสุทธิ</small><strong id="investTotal">฿0</strong></div>
-
-<div class="stat"><small>ออมและลงทุนรวม</small><strong id="wealthTotal">฿27,000</strong></div>
-
-</div>
-
-<select id="fundType">
-
-<option value="saving">ออมเงิน</option>
-
-<option value="investment">ลงทุน</option>
-
-</select>
-
-<select id="fundAction">
-
-<option value="add">เพิ่มเงิน</option>
-
-<option value="withdraw">ถอนเงิน</option>
-
-</select>
-
-<input id="fundAmount" type="number" min="0" placeholder="จำนวนเงิน">
-
-<input id="fundNote" placeholder="หมายเหตุ">
-
-<button onclick="addFund()">บันทึกเงินออม/ลงทุน</button>
+<div id="fundList"></div>
 
 </div>
 
@@ -212,19 +214,17 @@ small,.muted{color:#987b89}
 
 <h2>🎯 งบประมาณรายเดือน</h2>
 
-<input id="budget" type="number" placeholder="งบรายเดือน">
+<input id="budgetInput" type="number" placeholder="กำหนดงบรายจ่าย">
 
-<button class="secondary" onclick="saveBudget()">บันทึกงบประมาณ</button>
-
-<p id="budgetStatus"></p>
+<button onclick="saveBudget()">บันทึกงบประมาณ</button>
 
 </div>
 
 <div class="card">
 
-<h2>🔎 วันที่ยังไม่มีรายการรายจ่าย</h2>
+<h2>📅 วันที่ยังไม่มีรายการ</h2>
 
-<p class="muted">ตรวจสอบวันที่อาจลืมบันทึก</p>
+<div class="muted">ตรวจสอบวันที่ที่อาจลืมบันทึก</div>
 
 <div id="missing"></div>
 
@@ -232,13 +232,15 @@ small,.muted{color:#987b89}
 
 <div class="card">
 
-<h2>📒 รายการย้อนหลัง</h2>
+<h2>📝 ประวัติรายการ</h2>
 
 <div id="history"></div>
 
-<button class="secondary" onclick="exportData()">ส่งออกข้อมูลสำรอง</button>
-
 </div>
+
+</body>
+
+</html>
 
 <script>
 
@@ -246,359 +248,281 @@ const key='mimi-money-data';
 
 let data=JSON.parse(localStorage.getItem(key)||'{"items":[],"budget":0}');
 
+if(!Array.isArray(data.items))data.items=[];
+
 if(!Array.isArray(data.funds))data.funds=[];
 
-if(!data.paid)data.paid={};
+if(!data.accounts)data.accounts={};
 
-const fixed=[
+if(typeof data.accounts.gsb!=='number')data.accounts.gsb=27952;
 
-['ค่าประกัน',1500],
+if(typeof data.accounts.ktb!=='number')data.accounts.ktb=2596;
 
-['ให้ครอบครัว',7000],
+if(!data.billStatus)data.billStatus={};
 
-['ค่าไฟและอินเทอร์เน็ต',3000]
+const bills=[['ค่าไฟและอินเทอร์เน็ต',3000],['ค่าประกัน',1500],['ให้ครอบครัว',7000]];
 
-];
+const money=n=>'฿'+Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2});
 
-const openingSavings=27000;
+const today=()=>new Date().toISOString().slice(0,10);
 
-const pad=n=>String(n).padStart(2,'0');
+const month=()=>today().slice(0,7);
 
-function today(){
-
- const d=new Date();
-
- return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-
-}
-
-function month(d=new Date()){
-
- return d.getFullYear()+'-'+pad(d.getMonth()+1);
-
-}
+const save=()=>localStorage.setItem(key,JSON.stringify(data));
 
 document.getElementById('date').value=today();
 
-document.getElementById('budget').value=data.budget||'';
+function changeAccount(){
 
-function money(n){
+ const a=document.getElementById('account').value;
 
- return '฿'+Number(n||0).toLocaleString('th-TH');
+ const v=Number(document.getElementById('newBalance').value);
+
+ if(!Number.isFinite(v)||v<0){alert('กรุณากรอกยอดเงินให้ถูกต้อง');return}
+
+ data.accounts[a]=v;save();render();
+
+ document.getElementById('newBalance').value='';
+
+ alert('บันทึกยอดบัญชีแล้ว');
 
 }
 
-function save(){
+function billKey(i){return month()+'-'+i}
 
- localStorage.setItem(key,JSON.stringify(data));
+function payBill(i){
 
- render();
+ const k=billKey(i);
+
+ if(data.billStatus[k]){alert('บิลนี้จ่ายแล้ว');return}
+
+ if(data.accounts.gsb<bills[i][1]){alert('ยอดเงินออมสินไม่เพียงพอ');return}
+
+ if(!confirm('ยืนยันจ่าย'+bills[i][0]+' '+money(bills[i][1])+' จากออมสิน?'))return;
+
+ data.accounts.gsb-=bills[i][1];
+
+ data.billStatus[k]=true;
+
+ save();render();
 
 }
 
 function add(){
 
- const name=document.getElementById('name').value.trim();
+ const type=document.getElementById('type').value;
 
  const amount=Number(document.getElementById('amount').value);
 
+ const account=document.getElementById('entryAccount').value;
+
  const date=document.getElementById('date').value;
 
- if(!name||amount<=0||!date){
+ if(!amount||amount<=0||!date){alert('กรุณากรอกจำนวนเงินและวันที่');return}
 
-  alert('กรอกชื่อ จำนวนเงิน และวันที่ก่อนนะคะ');
+ if(type==='expense'&&data.accounts[account]<amount){alert('ยอดเงินในบัญชีไม่เพียงพอ');return}
 
-  return;
+ const item={
 
- }
-
- data.items.unshift({
-
-  name:name,
-
-  amount:amount,
-
-  type:document.getElementById('type').value,
+  id:Date.now(),type,amount,account,date,
 
   category:document.getElementById('category').value,
 
-  date:date
+  note:document.getElementById('note').value
 
- });
+ };
 
- document.getElementById('name').value='';
+ data.items.push(item);
+
+ data.accounts[account]+=type==='income'?amount:-amount;
+
+ save();render();
 
  document.getElementById('amount').value='';
 
- save();
+ document.getElementById('note').value='';
+
+ alert('บันทึกรายการแล้ว');
 
 }
 
-function saveBudget(){
+function removeItem(id){
 
- data.budget=Number(document.getElementById('budget').value)||0;
+ const i=data.items.findIndex(x=>x.id===id);
 
- save();
+ if(i<0)return;
+
+ if(!confirm('ต้องการลบรายการนี้ใช่ไหม?'))return;
+
+ const x=data.items[i];
+
+ if(x.account&&data.accounts[x.account]!==undefined){
+
+  data.accounts[x.account]+=x.type==='income'?-x.amount:x.amount;
+
+ }
+
+ data.items.splice(i,1);save();render();
 
 }
 
 function addFund(){
 
+ const name=document.getElementById('fundName').value.trim();
+
  const amount=Number(document.getElementById('fundAmount').value);
 
- if(amount<=0){
+ if(!name||!amount||amount<=0){alert('กรอกชื่อและจำนวนเงิน');return}
 
-  alert('ใส่จำนวนเงินก่อนนะคะ');
+ data.funds.push({id:Date.now(),name,amount});
 
-  return;
+ save();render();
 
- }
-
- data.funds.unshift({
-
-  type:document.getElementById('fundType').value,
-
-  action:document.getElementById('fundAction').value,
-
-  amount:amount,
-
-  note:document.getElementById('fundNote').value,
-
-  date:today()
-
- });
+ document.getElementById('fundName').value='';
 
  document.getElementById('fundAmount').value='';
 
- document.getElementById('fundNote').value='';
-
- save();
-
 }
 
-function togglePaid(i){
+function saveBudget(){
 
- const id=month()+'-'+i;
+ const v=Number(document.getElementById('budgetInput').value);
 
- data.paid[id]=!data.paid[id];
+ if(!v||v<=0){alert('กรุณากำหนดงบประมาณ');return}
 
- save();
-
-}
-
-function removeItem(i){
-
- if(confirm('ต้องการลบรายการนี้ไหม?')){
-
-  data.items.splice(i,1);
-
-  save();
-
- }
+ data.budget=v;save();render();alert('บันทึกงบประมาณแล้ว');
 
 }
 
 function render(){
 
- const m=month();
+ document.getElementById('gsb').textContent=money(data.accounts.gsb);
 
- const items=data.items.filter(x=>(x.date||'').startsWith(m));
+ document.getElementById('ktb').textContent=money(data.accounts.ktb);
 
- const income=items.filter(x=>x.type==='income')
+ document.getElementById('total').textContent=money(data.accounts.gsb+data.accounts.ktb);
 
-  .reduce((s,x)=>s+x.amount,0);
+ let unpaid=0;
 
- const expenses=items.filter(x=>x.type==='expense')
+ document.getElementById('billList').innerHTML=bills.map((b,i)=>{
 
-  .reduce((s,x)=>s+x.amount,0);
+  const paid=!!data.billStatus[billKey(i)];
 
- const reserved=fixed.reduce((s,x)=>s+x[1],0);
+  if(!paid)unpaid+=b[1];
 
- // กันเงินประจำก่อน แล้วหักเฉพาะรายจ่ายอื่น
-
- const fixedNames=['ครอบครัว','ประกัน','ค่าน้ำค่าไฟ/อินเทอร์เน็ต'];
-
- const variableExpenses=items
-
-  .filter(x=>x.type==='expense'&&!fixedNames.includes(x.category))
-
-  .reduce((s,x)=>s+x.amount,0);
-
- const available=income-reserved-variableExpenses;
-
- document.getElementById('income').textContent=money(income);
-
- document.getElementById('expense').textContent=money(expenses);
-
- document.getElementById('reserved').textContent=money(reserved);
-
- document.getElementById('available').textContent=money(available);
-
- let alertBox='';
-
- if(available<0){
-
-  alertBox='<div class="notice">เงินที่เหลือใช้ติดลบแล้ว โปรดตรวจสอบรายจ่ายนะคะ</div>';
-
- }
-
- if(data.budget>0){
-
-  const pct=expenses/data.budget*100;
-
-  alertBox+='<div class="notice">'+
-
-   (pct>=100?'เกินงบแล้วค่ะ!':pct>=90?'ระวัง! ใช้งบเกิน 90% แล้ว':pct>=70?'แจ้งเตือน: ใช้งบถึง 70% แล้ว':'ยังอยู่ในงบค่ะ 💗')+
-
-   ' ('+pct.toFixed(0)+'%)</div>';
-
-  document.getElementById('budgetStatus').textContent=
-
-   'ใช้ไป '+money(expenses)+' จาก '+money(data.budget)+
-
-   ' · เหลือ '+money(data.budget-expenses);
-
- }
-
- document.getElementById('alert').innerHTML=alertBox;
-
- document.getElementById('fixed').innerHTML=fixed.map((x,i)=>{
-
-  const paid=!!data.paid[m+'-'+i];
-
-  return '<div class="item"><div><strong>'+x[0]+'</strong><br><small>'+
-
-   money(x[1])+' · '+(paid?'จ่ายแล้ว':'ยังไม่จ่าย')+
-
-   '</small></div><button class="tiny '+(paid?'secondary':'')+
-
-   '" onclick="togglePaid('+i+')">'+(paid?'ยกเลิก':'จ่ายแล้ว')+
-
-   '</button></div>';
+  return `<div class="item"><div class="row"><div>${b[0]}<br><b>${money(b[1])}</b><div class="muted">${paid?'จ่ายแล้ว':'ยังไม่จ่าย'}</div></div><div><button class="${paid?'secondary':''}" onclick="payBill(${i})" ${paid?'disabled':''}>${paid?'เรียบร้อย':'จ่ายบิล'}</button></div></div></div>`;
 
  }).join('');
 
+ document.getElementById('billSummary').textContent=money(unpaid);
+
+ const now=month();
+
+ const items=data.items.filter(x=>x.date&&x.date.slice(0,7)===now);
+
+ const inc=items.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+
+ const exp=items.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
+
+ const percent=data.budget?exp/data.budget*100:0;
+
+ document.getElementById('income').textContent=money(inc);
+
+ document.getElementById('expense').textContent=money(exp);
+
+ document.getElementById('balance').textContent=money(inc-exp);
+
+ document.getElementById('budgetPercent').textContent=data.budget?percent.toFixed(0)+'%':'ยังไม่ตั้งงบ';
+
+ document.getElementById('budgetBar').style.width=Math.min(percent,100)+'%';
+
+ document.getElementById('budgetAlert').textContent=!data.budget?'กรุณาตั้งงบประมาณ':percent>=100?'⚠️ ใช้งบครบหรือเกินแล้ว':percent>=90?'⚠️ ใช้งบเกิน 90% แล้ว':percent>=70?'ใกล้ถึงงบแล้ว ใช้ไป '+percent.toFixed(0)+'%':'ใช้งบไป '+percent.toFixed(0)+'%';
+
  const cats={};
 
- items.filter(x=>x.type==='expense').forEach(x=>{
+ items.filter(x=>x.type==='expense').forEach(x=>cats[x.category]=(cats[x.category]||0)+x.amount);
 
-  cats[x.category]=(cats[x.category]||0)+x.amount;
+ document.getElementById('categories').innerHTML=Object.entries(cats).map(([k,v])=>`<div class="item">${k} <b style="float:right">${money(v)}</b></div>`).join('')||'<div class="muted">ยังไม่มีรายจ่าย</div>';
 
- });
+ document.getElementById('fundList').innerHTML=data.funds.map(x=>`<div class="item">${x.name} <b style="float:right">${money(x.amount)}</b></div>`).join('')||'<div class="muted">ยังไม่มีรายการ</div>';
 
- const catRows=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+ document.getElementById('history').innerHTML=[...data.items].sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="item"><div class="row"><div>${x.date} · ${x.category}<div class="muted">${x.note||''} · ${x.account==='gsb'?'ออมสิน':'กรุงไทย'}</div></div><div style="text-align:right">${x.type==='income'?'<span class="good">+':'<span class="bad">-'}${money(x.amount)}</span><button class="danger" onclick="removeItem(${x.id})">ลบ</button></div></div></div>`).join('')||'<div class="muted">ยังไม่มีรายการ</div>';
 
- const maxCat=Math.max(1,...catRows.map(x=>x[1]));
+ const days=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
 
- document.getElementById('categories').innerHTML=catRows.length?
-
-  catRows.map(([name,value])=>
-
-   '<div>'+name+' · '+money(value)+
-
-   '<div class="bar"><div class="fill" style="width:'+
-
-   (value/maxCat*100)+'%"></div></div></div>'
-
-  ).join(''):'ยังไม่มีรายจ่ายในเดือนนี้';
-
- let chart='';
-
- for(let j=5;j>=0;j--){
-
-  const d=new Date();
-
-  d.setDate(1);
-
-  d.setMonth(d.getMonth()-j);
-
-  const mk=month(d);
-
-  const arr=data.items.filter(x=>(x.date||'').startsWith(mk));
-
-  const a=arr.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
-
-  const b=arr.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
-
-  const max=Math.max(1,a,b);
-
-  chart+='<div style="margin:12px 0"><strong>'+mk+
-
-   '</strong><small> · รับ '+money(a)+' / จ่าย '+money(b)+
-
-   '</small><div class="bar"><div style="height:100%;background:#8bc9aa;width:'+
-
-   (a/max*100)+'%"></div></div><div class="bar"><div style="height:100%;background:#df8eac;width:'+
-
-   (b/max*100)+'%"></div></div></div>';
-
- }
-
- document.getElementById('chart').innerHTML=chart;
-
- const recorded=new Set(items.filter(x=>x.type==='expense').map(x=>x.date));
+ const recorded=new Set(items.map(x=>x.date));
 
  const missing=[];
 
  for(let d=1;d<=new Date().getDate();d++){
 
-  const date=m+'-'+pad(d);
+  const date=now+'-'+String(d).padStart(2,'0');
 
   if(!recorded.has(date))missing.push(date);
 
  }
 
- document.getElementById('missing').innerHTML=missing.length?
+ document.getElementById('missing').innerHTML=missing.length?missing.map(d=>`<div class="item">${d}</div>`).join(''):'<div class="muted">มีรายการบันทึกครบทุกวันแล้ว</div>';
 
-  '<div class="notice">พบ '+missing.length+' วันที่ยังไม่มีรายการรายจ่าย</div>'+
+ document.getElementById('budgetInput').value=data.budget||'';
 
-  missing.join(' · '):
-
-  'มีรายการรายจ่ายทุกวันจนถึงวันนี้ค่ะ (โปรดตรวจสอบอีกครั้ง)';
-
- const saving=data.funds.filter(x=>x.type==='saving')
-
-  .reduce((s,x)=>s+(x.action==='add'?x.amount:-x.amount),0);
-
- const invest=data.funds.filter(x=>x.type==='investment')
-
-  .reduce((s,x)=>s+(x.action==='add'?x.amount:-x.amount),0);
-
- document.getElementById('savingTotal').textContent=money(saving);
-
- document.getElementById('investTotal').textContent=money(invest);
-
- document.getElementById('wealthTotal').textContent=money(openingSavings+saving+invest);
-
- document.getElementById('history').innerHTML=data.items.length?
-
-  data.items.map((x,i)=>
-
-   '<div class="item"><div>'+x.name+'<br><small>'+x.date+
-
-   ' · '+x.category+'</small></div><div>'+
-
-   (x.type==='income'?'+':'−')+money(x.amount)+
-
-   '<br><button class="secondary tiny" onclick="removeItem('+i+')">ลบ</button></div></div>'
-
-  ).join(''):'ยังไม่มีรายการค่ะ';
+ drawChart();
 
 }
 
-function exportData(){
+function drawChart(){
 
- const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ const c=document.getElementById('chart'),ctx=c.getContext('2d');
 
- const a=document.createElement('a');
+ ctx.clearRect(0,0,c.width,c.height);
 
- a.href=URL.createObjectURL(blob);
+ const labels=[];
 
- a.download='mimi-money-backup.json';
+ for(let i=5;i>=0;i--){
 
- a.click();
+  const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);
 
- URL.revokeObjectURL(a.href);
+  labels.push(d.toISOString().slice(0,7));
+
+ }
+
+ const vals=labels.map(m=>{
+
+  const a=data.items.filter(x=>x.date&&x.date.slice(0,7)===m);
+
+  return {
+
+   income:a.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0),
+
+   expense:a.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0)
+
+  };
+
+ });
+
+ const max=Math.max(1,...vals.flatMap(x=>[x.income,x.expense]));
+
+ labels.forEach((m,i)=>{
+
+  const x=45+i*92;
+
+  const h1=vals[i].income/max*160,h2=vals[i].expense/max*160;
+
+  ctx.fillStyle='#69b99b';ctx.fillRect(x,190-h1,24,h1);
+
+  ctx.fillStyle='#dc83aa';ctx.fillRect(x+28,190-h2,24,h2);
+
+  ctx.fillStyle='#6e5b68';ctx.font='12px Arial';ctx.fillText(m.slice(5),x,215);
+
+ });
+
+ ctx.fillStyle='#69b99b';ctx.fillRect(40,12,12,12);
+
+ ctx.fillStyle='#493b46';ctx.fillText('รายรับ',57,23);
+
+ ctx.fillStyle='#dc83aa';ctx.fillRect(120,12,12,12);
+
+ ctx.fillStyle='#493b46';ctx.fillText('รายจ่าย',137,23);
 
 }
 
